@@ -1,0 +1,178 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-11-28 15:44+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: admin.py:9 admin.py:10 admin.py:11
+msgid "Medication Bot"
+msgstr "Лекарства бот"
+
+#: admin.py:67 models.py:67
+msgid "Phone numbers"
+msgstr "Номера телефонов"
+
+#: forms.py:10 models.py:79 models.py:140
+msgid "Pharmacy"
+msgstr "Аптека"
+
+#: forms.py:21 models.py:101 models.py:141
+msgid "Medication"
+msgstr "Лекарство"
+
+#: forms.py:44
+msgid "Units are required if dosage is specified"
+msgstr "Единицы измерения обязательны, если указана дозировка"
+
+#: forms.py:46
+msgid "Dosage is required if units are specified"
+msgstr "Дозировка обязательна, если указаны единицы измерения"
+
+#: forms.py:48
+msgid "Form is required if quantity is specified"
+msgstr "Форма обязательна, если указано количество"
+
+#: forms.py:50
+msgid "Quantity is required if form is specified"
+msgstr "Количество обязательно, если указана форма"
+
+#: forms.py:53 models.py:37 models.py:59 models.py:114
+msgid "Name"
+msgstr "Имя"
+
+#: models.py:17
+msgid "Users"
+msgstr ""
+
+#: models.py:18
+msgid "User"
+msgstr ""
+
+#: models.py:20
+msgid "ID"
+msgstr ""
+
+#: models.py:21
+msgid "Username"
+msgstr ""
+
+#: models.py:22
+msgid "First name"
+msgstr ""
+
+#: models.py:23
+msgid "Last name"
+msgstr ""
+
+#: models.py:24 models.py:68 models.py:87
+msgid "Phone number"
+msgstr "Номер телефона"
+
+#: models.py:25
+msgid "Is bot"
+msgstr ""
+
+#: models.py:26
+msgid "Is deleted"
+msgstr ""
+
+#: models.py:34
+msgid "Districts"
+msgstr "Районы"
+
+#: models.py:35 models.py:86
+msgid "District"
+msgstr "Район"
+
+#: models.py:45
+msgid "Addresses"
+msgstr "Адреса"
+
+#: models.py:46 models.py:48 models.py:85
+msgid "Address"
+msgstr "Адрес"
+
+#: models.py:56
+msgid "Chains"
+msgstr "Сети"
+
+#: models.py:57 models.py:84
+msgid "Chain"
+msgstr "Сеть"
+
+#: models.py:70
+msgid "Number"
+msgstr "Номер"
+
+#: models.py:78
+msgid "Pharmacies"
+msgstr "Аптеки"
+
+#: models.py:88
+msgid "Rating"
+msgstr "Рейтинг"
+
+#: models.py:100
+msgid "Medications"
+msgstr "Лекарства"
+
+#: models.py:105
+msgid "pills"
+msgstr "таблеток"
+
+#: models.py:106
+msgid "ampoules"
+msgstr "ампул"
+
+#: models.py:110
+msgid "ml"
+msgstr "мл"
+
+#: models.py:111
+msgid "mg"
+msgstr "мг"
+
+#: models.py:115
+msgid "Dosage"
+msgstr "Дозировка"
+
+#: models.py:116
+msgid "Units"
+msgstr "Единицы измерения"
+
+#: models.py:117
+msgid "Quantity in pack"
+msgstr "Количество в упаковке"
+
+#: models.py:118
+msgid "Form"
+msgstr "Форма"
+
+#: models.py:119
+msgid "Description"
+msgstr "Описание"
+
+#: models.py:134
+msgid "Pharmacy stocks"
+msgstr "Аптечные запасы"
+
+#: models.py:135
+msgid "Pharmacy stock"
+msgstr "Аптечный запас"
+
+#: models.py:142
+msgid "Price"
+msgstr "Цена"
