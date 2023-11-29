@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-11-28 15:44+0000\n"
+"POT-Creation-Date: 2023-11-29 20:51+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,15 +21,15 @@ msgstr ""
 msgid "Medication Bot"
 msgstr "Лекарства бот"
 
-#: admin.py:67 models.py:67
+#: admin.py:79 models.py:67
 msgid "Phone numbers"
 msgstr "Номера телефонов"
 
-#: forms.py:10 models.py:79 models.py:140
+#: forms.py:10 models.py:79 models.py:140 models.py:154
 msgid "Pharmacy"
 msgstr "Аптека"
 
-#: forms.py:21 models.py:101 models.py:141
+#: forms.py:21 models.py:101 models.py:141 models.py:155
 msgid "Medication"
 msgstr "Лекарство"
 
@@ -173,6 +173,14 @@ msgstr "Аптечные запасы"
 msgid "Pharmacy stock"
 msgstr "Аптечный запас"
 
-#: models.py:142
+#: models.py:142 models.py:156
 msgid "Price"
 msgstr "Цена"
+
+#: models.py:150
+msgid "Products of the day"
+msgstr "Товары дня"
+
+#: models.py:151
+msgid "Product of the day"
+msgstr "Товар дня"

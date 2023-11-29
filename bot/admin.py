@@ -1,5 +1,5 @@
 from django.contrib import admin
-from bot.models import Pharmacy, Medication, PharmacyStock, District, Address, Phone, Chain
+from bot.models import Pharmacy, Medication, PharmacyStock, District, Address, Phone, Chain, ProductOfTheDay
 from django.utils.translation import gettext_lazy as _
 from bot.forms import MedicationForm, PharmacyStockForm, PharmacyForm
 from django_admin_inline_paginator.admin import TabularInlinePaginated
@@ -9,6 +9,18 @@ from django.db.models import Q
 admin.site.site_header = _('Medication Bot')
 admin.site.site_title = _('Medication Bot')
 admin.site.index_title = _('Medication Bot')
+
+
+class BaseAdmin(admin.ModelAdmin):
+    def get_search_results(self, request, queryset, search_term):
+        if search_term:
+            where = Q(
+                Q(pharmacy__chain__name__icontains=search_term) | 
+                Q(pharmacy__address__name__icontains=search_term) | 
+                Q(medication__name__icontains=search_term)
+            )
+            queryset = queryset.filter(where).all()
+        return queryset, False
 
 
 class ChainAdmin(admin.ModelAdmin):
@@ -70,7 +82,7 @@ class PharmacyAdmin(admin.ModelAdmin):
         if obj.rating:
             pharmacies = Pharmacy.objects.filter(rating=obj.rating).all()
             for i in pharmacies:
-                i.rating = None
+                i.rating = 0
                 i.save()
         super().save_model(request, obj, form, change)
 
@@ -95,7 +107,7 @@ class MedicationAdmin(admin.ModelAdmin):
         js = ('bot/js/medication.js',)
 
 
-class PharmacyStockAdmin(admin.ModelAdmin):
+class PharmacyStockAdmin(BaseAdmin):
     form = PharmacyStockForm
     autocomplete_fields = ('pharmacy', 'medication')
     list_display = ('id', 'pharmacy', 'medication', 'price')
@@ -103,15 +115,13 @@ class PharmacyStockAdmin(admin.ModelAdmin):
     list_display_links = ('pharmacy', 'medication')
     per_page = 100
 
-    def get_search_results(self, request, queryset, search_term):
-        if search_term:
-            where = Q(
-                Q(pharmacy__chain__name__icontains=search_term) | 
-                Q(pharmacy__address__name__icontains=search_term) | 
-                Q(medication__name__icontains=search_term)
-            )
-            queryset = queryset.filter(where).all()
-        return queryset, False
+
+class ProductOfTheDayAdmin(BaseAdmin):
+    autocomplete_fields = ('pharmacy', 'medication')
+    list_display = ('id', 'pharmacy', 'medication', 'price')
+    search_fields = ('id',)
+    list_display_links = ('pharmacy', 'medication')
+    per_page = 100
 
 
 admin.site.register(Chain, ChainAdmin)
@@ -121,3 +131,4 @@ admin.site.register(Phone, PhoneAdmin)
 admin.site.register(Pharmacy, PharmacyAdmin)
 admin.site.register(Medication, MedicationAdmin)
 admin.site.register(PharmacyStock, PharmacyStockAdmin)
+admin.site.register(ProductOfTheDay, ProductOfTheDayAdmin)

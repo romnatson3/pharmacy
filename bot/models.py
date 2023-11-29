@@ -143,3 +143,17 @@ class PharmacyStock(BaseModel):
 
     def __str__(self):
         return str(self.id)
+
+
+class ProductOfTheDay(BaseModel):
+    class Meta:
+        verbose_name_plural = _('Products of the day')
+        verbose_name = _('Product of the day')
+        unique_together = ('pharmacy', 'medication')
+
+    pharmacy = models.ForeignKey(Pharmacy, on_delete=models.PROTECT, related_name='product_of_the_day', verbose_name=_('Pharmacy'))
+    medication = models.ForeignKey(Medication, on_delete=models.PROTECT, related_name='product_of_the_day', verbose_name=_('Medication'))
+    price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_('Price'), blank=False)
+
+    def __str__(self):
+        return str(self.id)

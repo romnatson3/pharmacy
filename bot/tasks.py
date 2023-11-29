@@ -5,7 +5,7 @@ from app.celery import app
 from django.db.models import F
 from bot.misc import send_message, batched
 from bot import texts
-from bot.models import PharmacyStock, District, Pharmacy
+from bot.models import PharmacyStock, District, Pharmacy, ProductOfTheDay
 
 
 logger = get_task_logger(__name__)
@@ -18,6 +18,7 @@ def send_message_to_new_user(id):
         {
             'keyboard': [[
                 {'text': texts.search_by_medication_button},
+                {'text': texts.product_of_the_day}
             ]],
             'resize_keyboard': True
         }
@@ -29,8 +30,8 @@ def send_message_to_new_user(id):
 @app.task()
 def send_message_districts(id):
     districts = District.objects.annotate(text=F('name'), callback_data=F('id')).values('text', 'callback_data')
-    inline_keyboard = batched(districts, 3)
-    inline_keyboard.append([{'text': texts.all_districts, 'callback_data': 'all_districts'}])
+    inline_keyboard = batched(districts, 2)
+    inline_keyboard[-1].append({'text': texts.all_districts, 'callback_data': 'all_districts'})
     reply_markup = json.dumps({'inline_keyboard': inline_keyboard})
     send_message('sendMessage', chat_id=id, parse_mode='HTML', text=texts.district, reply_markup=reply_markup)
     logger.info(f'Send message about districts to {id=} successfully')
@@ -50,7 +51,7 @@ def send_message_before_searching(id):
 
 @app.task()
 def send_message_search_result(id, stock_ids):
-    stocks = PharmacyStock.objects.select_related('medication').filter(id__in=stock_ids).order_by('price').all()[:5]
+    stocks = PharmacyStock.objects.select_related('medication').filter(id__in=stock_ids).order_by('price').all()[:15]
     stocks = list(reversed(stocks))
     pharmacy_ids = [stock.pharmacy_id for stock in stocks]
     pharmacies = Pharmacy.objects.select_related('chain', 'address').prefetch_related('phone').filter(id__in=pharmacy_ids).all()
@@ -58,7 +59,7 @@ def send_message_search_result(id, stock_ids):
         text = ''
         for stock in stocks:
             pharmacy = list(filter(lambda x: x.id == stock.pharmacy_id, pharmacies))[0]
-            medication = f'<b>{stock.medication} - {stock.price} грн.</b>\n'
+            medication = f'💊 <b>{stock.medication} - {stock.price} грн.</b>\n'
             phones = ''
             if pharmacy.phone.exists():
                 for phone in pharmacy.phone.all():
@@ -66,3 +67,26 @@ def send_message_search_result(id, stock_ids):
             text += medication + f'{pharmacy}\n' + phones + '\n'
         send_message('sendMessage', chat_id=id, parse_mode='HTML', text=text)
         logger.info(f'Send message search result to {id=} successfully')
+
+
+@app.task()
+def send_message_product_of_the_day(id):
+    products = ProductOfTheDay.objects.select_related('medication').order_by('-price').all()
+    if not products:
+        send_message('sendMessage', chat_id=id, parse_mode='HTML', text=f'<i>{texts.product_of_the_day_not_found}</i>')
+        logger.info(f'Send message product of the day not found to {id=} successfully')
+        return
+    pharmacy_ids = [product.pharmacy_id for product in products]
+    pharmacies = Pharmacy.objects.select_related('chain', 'address').prefetch_related('phone').filter(id__in=pharmacy_ids).all()
+    if products:
+        text = ''
+        for product in products:
+            pharmacy = list(filter(lambda x: x.id == product.pharmacy_id, pharmacies))[0]
+            medication = f'💊 <b>{product.medication} - {product.price} грн.</b>\n'
+            phones = ''
+            if pharmacy.phone.exists():
+                for phone in pharmacy.phone.all():
+                    phones += f'{phone.number}\n'
+            text += medication + f'{pharmacy}\n' + phones + '\n'
+        send_message('sendMessage', chat_id=id, parse_mode='HTML', text=text)
+        logger.info(f'Send message product of the day to {id=} successfully')

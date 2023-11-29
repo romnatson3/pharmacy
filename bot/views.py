@@ -7,7 +7,8 @@ from django.core.cache import cache
 from django.db.models import Q
 from bot.misc import DotAccessibleDict
 from bot.tasks import send_message_to_new_user, send_message_before_searching, \
-    send_message_not_found, send_message_search_result, send_message_districts
+    send_message_not_found, send_message_search_result, send_message_districts, \
+    send_message_product_of_the_day
 from bot.models import PharmacyStock, User
 from bot import texts
 
@@ -50,6 +51,9 @@ def telegram_webhook(request):
 
             elif message.text == texts.search_by_medication_button:
                 send_message_districts.delay(message.from_user.id)
+
+            elif message.text == texts.product_of_the_day:
+                send_message_product_of_the_day.delay(message.from_user.id)
 
             elif district and len(message.text) >= 3:
                 logging.info(f'User {message.from_user.id} searching: {message.text}')
