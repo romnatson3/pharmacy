@@ -1,5 +1,6 @@
 from django.contrib import admin
-from bot.models import Pharmacy, Medication, PharmacyStock, District, Address, Phone, Chain, ProductOfTheDay
+from bot.models import Pharmacy, Medication, PharmacyStock, District, Address, \
+    Phone, Chain, ProductOfTheDay, Form, Unit
 from django.utils.translation import gettext_lazy as _
 from bot.forms import MedicationForm, PharmacyStockForm, PharmacyForm
 from django_admin_inline_paginator.admin import TabularInlinePaginated
@@ -41,6 +42,18 @@ class AddressAdmin(admin.ModelAdmin):
     list_display_links = ('name',)
 
 
+class FormAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+    search_fields = ('name',)
+    list_display_links = ('name',)
+
+
+class UnitAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+    search_fields = ('name',)
+    list_display_links = ('name',)
+
+
 class PhoneAdmin(admin.ModelAdmin):
     list_display = ('number',)
     search_fields = ('number',)
@@ -64,11 +77,12 @@ class PharmacyStockInline(TabularInlinePaginated):
 class PharmacyAdmin(admin.ModelAdmin):
     form = PharmacyForm
     list_display = ('id', 'chain', 'address', 'phones', 'district', 'rating')
-    search_fields = ('chain', 'address')
+    search_fields = ('id',)
     list_display_links = ('chain', 'address')
     list_filter = ('district', 'chain')
     inlines = [PharmacyStockInline]
     autocomplete_fields = ('address', 'phone', 'chain')
+    actions = ('copy_action',)
 
     def phones(self, obj):
         if obj.phone.exists():
@@ -78,6 +92,15 @@ class PharmacyAdmin(admin.ModelAdmin):
             return '-'
     phones.short_description = _('Phone numbers')
 
+    def get_search_results(self, request, queryset, search_term):
+        if search_term:
+            where = Q(
+                Q(chain__name__icontains=search_term) | 
+                Q(address__name__icontains=search_term) 
+            )
+            queryset = queryset.filter(where).all()
+        return queryset, False
+
     def save_model(self, request, obj, form, change):
         if obj.rating:
             pharmacies = Pharmacy.objects.filter(rating=obj.rating).all()
@@ -85,6 +108,17 @@ class PharmacyAdmin(admin.ModelAdmin):
                 i.rating = 0
                 i.save()
         super().save_model(request, obj, form, change)
+
+    def copy_action(self, request, queryset):
+        for obj in queryset:
+            previous_phone = obj.phone.all()
+            obj.id = None
+            obj.rating = 0
+            obj.address_id = None
+            obj.save()
+            obj.phone.set(previous_phone)
+        self.message_user(request, _('Selected records were copied successfully'))
+    copy_action.short_description = _('Copy chosen records')
 
     class Media:
         css = {
@@ -132,3 +166,5 @@ admin.site.register(Pharmacy, PharmacyAdmin)
 admin.site.register(Medication, MedicationAdmin)
 admin.site.register(PharmacyStock, PharmacyStockAdmin)
 admin.site.register(ProductOfTheDay, ProductOfTheDayAdmin)
+admin.site.register(Form, FormAdmin)
+admin.site.register(Unit, UnitAdmin)

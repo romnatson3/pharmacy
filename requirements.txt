@@ -8,3 +8,4 @@ celery==5.3.4
 redis==5.0.1
 flower==2.0.1
 django-admin-inline-paginator==0.4.0
+django-debug-toolbar==4.2.0

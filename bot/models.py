@@ -2,6 +2,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from django.core.validators import MinValueValidator, MaxValueValidator
+from decimal import Decimal
 
 
 class BaseModel(models.Model):
@@ -73,6 +74,11 @@ class Phone(BaseModel):
         return self.number
 
 
+class PharmacyManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().select_related('chain', 'address', 'district')
+
+
 class Pharmacy(BaseModel):
     class Meta:
         verbose_name_plural = _('Pharmacies')
@@ -82,13 +88,20 @@ class Pharmacy(BaseModel):
     RATING = [(i, i) if i else (0, '-----') for i in range(16)]
 
     chain = models.ForeignKey('Chain', on_delete=models.PROTECT, related_name='pharmacy', verbose_name=_('Chain'))
-    address = models.ForeignKey('Address', on_delete=models.PROTECT, related_name='pharmacy', verbose_name=_('Address'))
+    address = models.ForeignKey('Address', on_delete=models.PROTECT, related_name='pharmacy', verbose_name=_('Address'), null=True)
     district = models.ForeignKey('District', on_delete=models.PROTECT, related_name='pharmacy', verbose_name=_('District'))
     phone = models.ManyToManyField('Phone', verbose_name=_('Phone number'), blank=False)
     rating = models.IntegerField(_('Rating'), choices=RATING, blank=True, default=0, validators=[MinValueValidator(0), MaxValueValidator(RATING[-1][0])])
 
     def __str__(self):
         return f'{self.chain} - {self.address}'
+
+    objects = PharmacyManager()
+
+
+class MedicationManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().select_related('units', 'form')
 
 
 class Medication(BaseModel):
@@ -99,34 +112,53 @@ class Medication(BaseModel):
         ]
         verbose_name_plural = _('Medications')
         verbose_name = _('Medication')
-        unique_together = ('name', 'dosage')
-
-    FORM = (
-        ('pills', _('pills')),
-        ('ampoules', _('ampoules'))
-    )
-
-    UNITS = (
-        ('ml', _('ml')),
-        ('mg', _('mg'))
-    )
+        unique_together = ('name', 'dosage', 'quantity')
 
     name = models.CharField(max_length=255, verbose_name=_('Name'), blank=False)
     dosage = models.IntegerField(verbose_name=_('Dosage'), blank=True, null=True)
-    units = models.CharField(max_length=10, verbose_name=_('Units'), choices=UNITS, blank=True, null=True)
+    units = models.ForeignKey('Unit', on_delete=models.PROTECT, related_name='medication', verbose_name=_('Units'), blank=True, null=True)
     quantity = models.IntegerField(verbose_name=_('Quantity in pack'), validators=[MinValueValidator(1), MaxValueValidator(10000)], blank=True, null=True)
-    form = models.CharField(_('Form'), choices=FORM, blank=True, null=True)
+    form = models.ForeignKey('Form', on_delete=models.PROTECT, related_name='medication', verbose_name=_('Form'), blank=True, null=True)
     description = models.TextField(verbose_name=_('Description'), blank=True, null=True)
 
     def __str__(self):
         if self.dosage and self.units and self.quantity and self.form:
-            return f'{self.name}, {self.dosage} {_(self.units)}, {self.quantity} {_(self.form)}'
+            return f'{self.name}, {self.dosage} {self.units}, {self.quantity} {self.form}'
         elif self.dosage and self.units and not self.quantity:
-            return f'{self.name}, {self.dosage} {_(self.units)}'
+            return f'{self.name}, {self.dosage} {self.units}'
         elif not self.dosage and self.quantity and self.form:
-            return f'{self.name}, {self.quantity} {_(self.form)}'
+            return f'{self.name}, {self.quantity} {self.form}'
         else:
             return f'{self.name}'
+
+    objects = MedicationManager()
+
+
+class Form(BaseModel):
+    class Meta:
+        verbose_name_plural = _('Forms')
+        verbose_name = _('Form')
+
+    name = models.CharField(max_length=50, verbose_name=_('Name'), blank=False, unique=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Unit(BaseModel):
+    class Meta:
+        verbose_name_plural = _('Units')
+        verbose_name = _('Unit')
+
+    name = models.CharField(max_length=50, verbose_name=_('Name'), blank=False, unique=True)
+
+    def __str__(self):
+        return self.name
+
+
+class PharmacyStockManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().select_related('medication', 'medication__form', 'medication__units', 'pharmacy__chain', 'pharmacy__address')
 
 
 class PharmacyStock(BaseModel):
@@ -139,10 +171,12 @@ class PharmacyStock(BaseModel):
 
     pharmacy = models.ForeignKey(Pharmacy, on_delete=models.PROTECT, related_name='stocks', verbose_name=_('Pharmacy'))
     medication = models.ForeignKey(Medication, on_delete=models.PROTECT, related_name='stocks', verbose_name=_('Medication'))
-    price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_('Price'), blank=False)
+    price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_('Price'), validators=[MinValueValidator(Decimal('0.01'))])
 
     def __str__(self):
         return str(self.id)
+
+    objects = PharmacyStockManager()
 
 
 class ProductOfTheDay(BaseModel):
@@ -157,3 +191,5 @@ class ProductOfTheDay(BaseModel):
 
     def __str__(self):
         return str(self.id)
+
+    objects = PharmacyStockManager()

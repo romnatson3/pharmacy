@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-11-29 20:51+0000\n"
+"POT-Creation-Date: 2023-12-04 14:45+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,39 +17,48 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: admin.py:9 admin.py:10 admin.py:11
+#: admin.py:10 admin.py:11 admin.py:12
 msgid "Medication Bot"
 msgstr "Лекарства бот"
 
-#: admin.py:79 models.py:67
+#: admin.py:93 models.py:67
 msgid "Phone numbers"
 msgstr "Номера телефонов"
 
-#: forms.py:10 models.py:79 models.py:140 models.py:154
+#: admin.py:111
+msgid "Selected records were copied successfully"
+msgstr "Выбранные записи были успешно скопированы"
+
+#: admin.py:112
+msgid "Copy chosen records"
+msgstr "Скопировать выбранные записи"
+
+#: forms.py:10 models.py:79 models.py:159 models.py:173
 msgid "Pharmacy"
 msgstr "Аптека"
 
-#: forms.py:21 models.py:101 models.py:141 models.py:155
+#: forms.py:21 models.py:106 models.py:160 models.py:174
 msgid "Medication"
 msgstr "Лекарство"
 
-#: forms.py:44
+#: forms.py:43
 msgid "Units are required if dosage is specified"
 msgstr "Единицы измерения обязательны, если указана дозировка"
 
-#: forms.py:46
+#: forms.py:45
 msgid "Dosage is required if units are specified"
 msgstr "Дозировка обязательна, если указаны единицы измерения"
 
-#: forms.py:48
+#: forms.py:47
 msgid "Form is required if quantity is specified"
 msgstr "Форма обязательна, если указано количество"
 
-#: forms.py:50
+#: forms.py:49
 msgid "Quantity is required if form is specified"
 msgstr "Количество обязательно, если указана форма"
 
-#: forms.py:53 models.py:37 models.py:59 models.py:114
+#: forms.py:53 models.py:37 models.py:59 models.py:109 models.py:134
+#: models.py:145
 msgid "Name"
 msgstr "Имя"
 
@@ -125,62 +134,54 @@ msgstr "Аптеки"
 msgid "Rating"
 msgstr "Рейтинг"
 
-#: models.py:100
+#: models.py:105
 msgid "Medications"
 msgstr "Лекарства"
 
-#: models.py:105
-msgid "pills"
-msgstr "таблеток"
-
-#: models.py:106
-msgid "ampoules"
-msgstr "ампул"
-
 #: models.py:110
-msgid "ml"
-msgstr "мл"
-
-#: models.py:111
-msgid "mg"
-msgstr "мг"
-
-#: models.py:115
 msgid "Dosage"
 msgstr "Дозировка"
 
-#: models.py:116
+#: models.py:111 models.py:142
 msgid "Units"
 msgstr "Единицы измерения"
 
-#: models.py:117
+#: models.py:112
 msgid "Quantity in pack"
 msgstr "Количество в упаковке"
 
-#: models.py:118
+#: models.py:113 models.py:132
 msgid "Form"
 msgstr "Форма"
 
-#: models.py:119
+#: models.py:114
 msgid "Description"
 msgstr "Описание"
 
-#: models.py:134
+#: models.py:131
+msgid "Forms"
+msgstr "Форма"
+
+#: models.py:143
+msgid "Unit"
+msgstr "Единицы измерения"
+
+#: models.py:153
 msgid "Pharmacy stocks"
 msgstr "Аптечные запасы"
 
-#: models.py:135
+#: models.py:154
 msgid "Pharmacy stock"
 msgstr "Аптечный запас"
 
-#: models.py:142 models.py:156
+#: models.py:161 models.py:175
 msgid "Price"
 msgstr "Цена"
 
-#: models.py:150
+#: models.py:169
 msgid "Products of the day"
 msgstr "Товары дня"
 
-#: models.py:151
+#: models.py:170
 msgid "Product of the day"
 msgstr "Товар дня"

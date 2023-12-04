@@ -39,7 +39,6 @@ class MedicationForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
-        print(cleaned_data)
         if cleaned_data['dosage'] and not cleaned_data['units']:
             raise forms.ValidationError(_('Units are required if dosage is specified'))
         elif cleaned_data['units'] and not cleaned_data['dosage']:
@@ -48,6 +47,7 @@ class MedicationForm(forms.ModelForm):
             raise forms.ValidationError(_('Form is required if quantity is specified'))
         elif cleaned_data['form'] and not cleaned_data['quantity']:
             raise forms.ValidationError(_('Quantity is required if form is specified'))
+        return cleaned_data
 
     name = forms.CharField(
         label=_('Name'),
