@@ -147,7 +147,16 @@ class PharmacyStockAdmin(BaseAdmin):
     list_display = ('id', 'pharmacy', 'medication', 'price')
     search_fields = ('id',)
     list_display_links = ('pharmacy', 'medication')
+    actions = ('copy_action',)
     per_page = 100
+
+    def copy_action(self, request, queryset):
+        for obj in queryset:
+            obj.id = None
+            obj.pharmacy_id = None
+            obj.save()
+        self.message_user(request, _('Selected records were copied successfully'))
+    copy_action.short_description = _('Copy chosen records')
 
 
 class ProductOfTheDayAdmin(BaseAdmin):

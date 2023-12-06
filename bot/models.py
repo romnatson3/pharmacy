@@ -169,7 +169,7 @@ class PharmacyStock(BaseModel):
             models.UniqueConstraint(fields=['pharmacy', 'medication'], name='unique_pharmacy_medication')
         ]
 
-    pharmacy = models.ForeignKey(Pharmacy, on_delete=models.PROTECT, related_name='stocks', verbose_name=_('Pharmacy'))
+    pharmacy = models.ForeignKey(Pharmacy, on_delete=models.PROTECT, related_name='stocks', verbose_name=_('Pharmacy'), null=True)
     medication = models.ForeignKey(Medication, on_delete=models.PROTECT, related_name='stocks', verbose_name=_('Medication'))
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_('Price'), validators=[MinValueValidator(Decimal('0.01'))])
 
