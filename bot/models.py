@@ -115,17 +115,22 @@ class Medication(BaseModel):
         unique_together = ('name', 'dosage', 'quantity')
 
     name = models.CharField(max_length=255, verbose_name=_('Name'), blank=False)
-    dosage = models.IntegerField(verbose_name=_('Dosage'), blank=True, null=True)
+    dosage = models.DecimalField(verbose_name=_('Dosage'), max_digits=5, decimal_places=2, blank=True, null=True)
     units = models.ForeignKey('Unit', on_delete=models.PROTECT, related_name='medication', verbose_name=_('Units'), blank=True, null=True)
     quantity = models.IntegerField(verbose_name=_('Quantity in pack'), validators=[MinValueValidator(1), MaxValueValidator(10000)], blank=True, null=True)
     form = models.ForeignKey('Form', on_delete=models.PROTECT, related_name='medication', verbose_name=_('Form'), blank=True, null=True)
     description = models.TextField(verbose_name=_('Description'), blank=True, null=True)
 
     def __str__(self):
+        if self.dosage:
+            if self.dosage % 1 == 0:
+                dosage = int(self.dosage)
+            else:
+                dosage = float(self.dosage)
         if self.dosage and self.units and self.quantity and self.form:
-            return f'{self.name}, {self.dosage} {self.units}, {self.quantity} {self.form}'
+            return f'{self.name}, {dosage} {self.units}, {self.quantity} {self.form}'
         elif self.dosage and self.units and not self.quantity:
-            return f'{self.name}, {self.dosage} {self.units}'
+            return f'{self.name}, {dosage} {self.units}'
         elif not self.dosage and self.quantity and self.form:
             return f'{self.name}, {self.quantity} {self.form}'
         else:

@@ -5,6 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from bot.forms import MedicationForm, PharmacyStockForm, PharmacyForm
 from django_admin_inline_paginator.admin import TabularInlinePaginated
 from django.db.models import Q
+from django.utils.html import mark_safe
 
 
 admin.site.site_header = _('Medication Bot')

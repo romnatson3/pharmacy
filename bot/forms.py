@@ -39,13 +39,13 @@ class MedicationForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
-        if cleaned_data['dosage'] and not cleaned_data['units']:
+        if cleaned_data.get('dosage') and not cleaned_data.get('units'):
             raise forms.ValidationError(_('Units are required if dosage is specified'))
-        elif cleaned_data['units'] and not cleaned_data['dosage']:
+        elif cleaned_data.get('units') and not cleaned_data.get('dosage'):
             raise forms.ValidationError(_('Dosage is required if units are specified'))
-        if cleaned_data['quantity'] and not cleaned_data['form']:
+        if cleaned_data.get('quantity') and not cleaned_data.get('form'):
             raise forms.ValidationError(_('Form is required if quantity is specified'))
-        elif cleaned_data['form'] and not cleaned_data['quantity']:
+        elif cleaned_data.get('form') and not cleaned_data.get('quantity'):
             raise forms.ValidationError(_('Quantity is required if form is specified'))
         return cleaned_data
 
