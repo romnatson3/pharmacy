@@ -7,7 +7,7 @@ from django.db.models import CharField, Value, F, Q
 from django.core.cache import cache
 from bot.misc import send_message, batched
 from bot import texts
-from bot.models import PharmacyStock, District, ProductOfTheDay, Medication, Pharmacy
+from bot.models import PharmacyStock, District, ProductOfTheDay, Medication
 
 
 logger = get_task_logger(__name__)
@@ -69,7 +69,7 @@ def send_message_before_searching(id):
 @app.task()
 def send_message_medication_buttons(id, medication_ids):
     medications = Medication.objects.filter(id__in=medication_ids).all()
-    keyboard = batched([dict(text=f'💊 {str(i)}⠀') for i in medications], 1) # U+2800 after str(i) is a zero width space
+    keyboard = batched([dict(text=f'💊 {str(i)}⠀') for i in medications], 1)  # after str(i) is a zero width space U2800
     reply_markup = json.dumps(
         {
             'keyboard': keyboard,

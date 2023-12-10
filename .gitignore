@@ -7,4 +7,5 @@ celerybeat-schedule
 media/
 .vimspector.json
 .vimspector.session
-
+public.pem
+private.key
